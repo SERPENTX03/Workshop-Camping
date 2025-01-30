@@ -26,7 +26,6 @@ const Hammenu = () => {
 
   if (!sessionId) {
     return (
-      <div className="md:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger>
             <MenuSquare size={30} />
@@ -52,12 +51,10 @@ const Hammenu = () => {
             </SignUpButton>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
     );
   }
 
   return (
-    <div className="md:hidden">
       <DropdownMenu>
         <DropdownMenuTrigger>
           <MenuSquare size={30} />
@@ -80,7 +77,6 @@ const Hammenu = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
   );
 };
 

@@ -1,32 +1,34 @@
-"use client"
+"use client";
 
-import React from 'react'
-import { useActionState, useEffect } from 'react'
-import { useToast } from "@/hooks/use-toast"
-import { actionFuction } from '@/utils/Types'
+import React, { useEffect } from "react";
+import { useActionState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { ActionFunction, FormState } from "@/utils/Types"; 
 
-const initiaState = { 
-  message: ' '
-}
+const initialState: FormState = {
+  message: "",
+};
 
+const FormContainer = ({
+  action,
+  children,
+}: {
+  action: ActionFunction;
+  children: React.ReactNode;
+}) => {
+  const { toast } = useToast();
+  const [state, formAction] = useActionState<FormState, FormData>(
+    action,
+    initialState
+  );
 
-const FormContainer = ({action,children}:
-  {action:actionFuction, children:React.ReactNode}) => {
-  const {toast} = useToast()
-  const [state, formAction] = useActionState(action,initiaState)
-  // console.log(state)
-  
-  useEffect(()=> {
-    if(state.message){
-      toast({description:state.message})
+  useEffect(() => {
+    if (state?.message?.trim()) {
+      toast({ description: state.message });
     }
-  },[state])
+  }, [state?.message, toast]);
 
-  return (
-    <form action={formAction}>
-      {children}
-      </form>
-  ) 
-}
+  return <form action={formAction}>{children}</form>;
+};
 
-export default FormContainer
+export default FormContainer;

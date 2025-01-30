@@ -10,11 +10,12 @@ import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
+import { revalidatePath } from "next/cache";
 
 const getAuthUser = async () => {
   const user = await currentUser();
   if (!user) {
-    throw new Error("You must Logged!!!");
+    throw new Error("You must be logged in!");
   }
   if (!user.privateMetadata.hasProfile) redirect("/profile/create");
 
@@ -23,17 +24,27 @@ const getAuthUser = async () => {
 
 const renderError = (error: unknown): { message: string } => {
   return {
-    message: error instanceof Error ? error.message : "An Error!!",
+    message: error instanceof Error ? error.message : "An error occurred!",
   };
 };
 
+type ProfileFormData = FormData;
+
+type LandmarkFormData = FormData;
+
+type ToggleFavoriteState = {
+  favoriteId: string | null;
+  landmarkId: string;
+  pathname: string;
+};
+
 export const createProfileAction = async (
-  prevStete: any,
-  formData: FormData
-) => {
+  prevState: string | null,
+  formData: ProfileFormData
+): Promise<{ message: string }> => {
   try {
     const user = await currentUser();
-    if (!user) throw new Error("Please Login!!!");
+    if (!user) throw new Error("Please log in!");
 
     const rawData = Object.fromEntries(formData);
     const validateField = validateWithZod(profileSchema, rawData);
@@ -54,7 +65,7 @@ export const createProfileAction = async (
         hasProfile: true,
       },
     });
-    // return { message: "Create Landmark Success!!" }
+    
   } catch (error) {
     return renderError(error);
   }
@@ -63,33 +74,28 @@ export const createProfileAction = async (
 };
 
 export const createLandmarkAction = async (
-  prevState: any,
-  formData: FormData
-): Promise<{ message: string }> => {
+  prevState: Record<string, unknown>,
+  formData: LandmarkFormData
+): Promise<{ message?: string }> => {
   try {
     const user = await currentUser();
-    if (!user) throw new Error("Please Login!!!");
+    if (!user) throw new Error("Please log in!");
 
-    const rawData = Object.fromEntries(formData); // แปลงข้อมูลฟอร์ม
-    const file = formData.get("image") as File; // ดึงไฟล์
+    const rawData = Object.fromEntries(formData);
+    const file = formData.get("image") as File;
 
-    //Step 1 ValidateData
     const validatedFile = validateWithZod(imageSchema, { image: file });
     const validateField = validateWithZod(landmarkSchema, rawData);
 
-    //Step 2 Update Image to Supabase
-    const fullPath = await uploadFile(validatedFile.image)
-    // console.log(fullPath)
+    const fullPath = await uploadFile(validatedFile.image);
 
-    //Step 3 Inser to DB
     await db.landmark.create({
-      data:{
+      data: {
         ...validateField,
-        image:fullPath,
-        profileId:user.id,
-      }
-    })
-
+        image: fullPath,
+        profileId: user.id,
+      },
+    });
   } catch (error) {
     return renderError(error);
   }
@@ -97,14 +103,115 @@ export const createLandmarkAction = async (
   redirect("/");
 };
 
-
-export const fetchLandmarks = async(
-  //Search 
-)=> {
-  const landmarks = await db.landmark.findMany({
+export const fetchLandmarks = async ({
+  search = "",
+  category,
+}: {
+  search?: string;
+  category?: string;
+}) => {
+  return db.landmark.findMany({
+    where: {
+      category,
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { province: { contains: search, mode: "insensitive" } },
+      ],
+    },
     orderBy: {
-      createdAt: 'desc'
+      createdAt: "desc",
+    },
+  });
+};
+
+export const fetchLandmarksHero = async () => {
+  return db.landmark.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 4,
+  });
+};
+
+export const fetchFavoriteId = async ({ landmarkId }: { landmarkId: string }) => {
+  const user = await getAuthUser();
+  if (!user || !user.id) {
+    throw new Error("User not authenticated");
+  }
+
+  const favorite = await db.favorite.findFirst({
+    where: {
+      landmarkId,
+      profileId: user.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return favorite?.id || null;
+};
+
+export const toggleFavoriteAction = async (prevState: ToggleFavoriteState) => {
+  const { favoriteId, landmarkId, pathname } = prevState;
+  const user = await getAuthUser();
+
+  try {
+    if (favoriteId) {
+      await db.favorite.delete({
+        where: {
+          id: favoriteId,
+        },
+      });
+    } else {
+      await db.favorite.create({
+        data: {
+          landmarkId,
+          profileId: user.id,
+        },
+      });
     }
-  })
-  return landmarks;
-}
+
+    revalidatePath(pathname);
+    return {
+      message: favoriteId ? "Removed from favorites" : "Added to favorites",
+    };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const fetchFavorites = async () => {
+  const user = await getAuthUser();
+  const favorites = await db.favorite.findMany({
+    where: {
+      profileId: user.id,
+    },
+    select: {
+      landmark: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          image: true,
+          price: true,
+          province: true,
+          lat: true,
+          lng: true,
+          category: true,
+        },
+      },
+    },
+  });
+
+  return favorites.map((favorite) => favorite.landmark);
+};
+
+export const fetchLandmarkDetail = async ({ id }: { id: string }) => {
+  return db.landmark.findFirst({
+    where: { id },
+    include: {
+      profile: true,
+    },
+  });
+};

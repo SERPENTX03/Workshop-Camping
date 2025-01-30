@@ -1,12 +1,11 @@
 import Link from "next/link";
 import React from "react";
 import Hammenu from "./Hammenu";
-import { SignedIn, UserButton } from "@clerk/nextjs";
 import { links } from "@/utils/Link";
+import Darkmode from "./Darkmode";
 
-type Props = {};
 
-const Menu = (props: Props) => {
+const Menu = () => {
   return (
     <div>
       <ul className="hidden md:flex space-x-6 font-semibold text-base lg:text-xl">
@@ -19,7 +18,8 @@ const Menu = (props: Props) => {
         })}
       </ul>
       {/* Mobile */}
-      <ul className="flex items-center gap-4">
+      <ul className="flex md:hidden items-center gap-4">
+        <Darkmode/>
         <Hammenu />
       </ul>
     </div>
