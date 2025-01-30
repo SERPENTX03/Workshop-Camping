@@ -2,7 +2,7 @@ import React from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from "@/components/ui/toaster";
 
-const Provider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
          <ThemeProvider
             attribute="class"
@@ -16,4 +16,4 @@ const Provider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   )
 }
 
-export default Provider
+export default Providers

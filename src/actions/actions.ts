@@ -11,6 +11,7 @@ import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
 import { revalidatePath } from "next/cache";
+import { FormState } from "@/utils/Types";
 
 const getAuthUser = async () => {
   const user = await currentUser();
@@ -39,7 +40,7 @@ type ToggleFavoriteState = {
 };
 
 export const createProfileAction = async (
-  prevState: string | null,
+  prevState: FormState = {message: ""},
   formData: ProfileFormData
 ): Promise<{ message: string }> => {
   try {

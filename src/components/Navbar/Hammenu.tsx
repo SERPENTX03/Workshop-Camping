@@ -12,7 +12,6 @@ import {
 import { MenuSquare } from "lucide-react";
 import {
   useAuth,
-  SignedOut,
   SignInButton,
   SignOutButton,
   SignUpButton,

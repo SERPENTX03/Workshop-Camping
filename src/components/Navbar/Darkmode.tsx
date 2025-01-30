@@ -9,9 +9,6 @@ const Darkmode = () => {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const handlesetTheme = ()=> {
-    setTheme(resolvedTheme === "light" ? "dark" : "light")
-  }
 
   React.useEffect(() => {
     setMounted(true);

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
-import Provider from "./Provider";
+import Providers from "./Providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import {shadesOfPurple} from "@clerk/themes"
 import Footer from "@/components/footer/Footer";
@@ -35,11 +35,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <Provider>
+          <Providers>
             <Navbar />
             {children}
             <Footer/>
-          </Provider>
+          </Providers>
         </body>
       </html>
     </ClerkProvider>
