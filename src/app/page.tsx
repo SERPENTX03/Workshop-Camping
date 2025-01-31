@@ -4,12 +4,15 @@ import { Suspense } from "react";
 import LoadingCard from "@/components/card/LoadingCard";
 
 interface PageProps {
-  searchParams?: Record<string, string | undefined>;
+  searchParams?: {
+    search?: string;
+    category?: string;
+  };
 }
 
-const Page = ({ searchParams }: PageProps) => {
-  const search = searchParams?.search;
-  const category = searchParams?.category;
+const Page = async ({ searchParams }: PageProps) => {
+  const search = (await searchParams)?.search;
+  const category = (await searchParams)?.category;
 
   return (
     <section>
