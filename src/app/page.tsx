@@ -3,24 +3,27 @@ import LandmarkContainer from "@/components/home/LandmarkContainer";
 import { Suspense } from "react";
 import LoadingCard from "@/components/card/LoadingCard";
 
-interface PageProps {
-  searchParams?: {
-    search?: string;
-    category?: string;
-  };
-}
+type SearchParams = {
+  search?: string;
+  category?: string;
+};
 
-const Page = async ({ searchParams }: PageProps) => {
-  const search = (await searchParams)?.search;
-  const category = (await searchParams)?.category;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  // Await the entire searchParams object first
+  const resolvedParams = await Promise.resolve(searchParams);
 
   return (
     <section>
       <Suspense fallback={<LoadingCard />}>
-        <LandmarkContainer search={search} category={category} />
+        <LandmarkContainer 
+          search={resolvedParams.search} 
+          category={resolvedParams.category}
+        />
       </Suspense>
     </section>
   );
-};
-
-export default Page;
+}
