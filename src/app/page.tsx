@@ -3,12 +3,12 @@ import LandmarkContainer from "@/components/home/LandmarkContainer";
 import { Suspense } from "react";
 import LoadingCard from "@/components/card/LoadingCard";
 
-const page = async ({
-  searchParams,
-}: {
-  searchParams: { search?: string, category?:string };
-}) => {
-  const { search,category } = await searchParams;
+interface PageProps {
+  searchParams: { search?: string; category?: string };
+}
+
+const page = ({ searchParams }: PageProps) => {
+  const { search, category } = searchParams;
   return (
     <section>
       <Suspense fallback={<LoadingCard />}>

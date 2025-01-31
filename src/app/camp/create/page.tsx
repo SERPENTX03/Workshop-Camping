@@ -2,8 +2,7 @@ import Forminput from "@/components/form/Forminput";
 import { SubmitButton } from "@/components/form/Buttons";
 import FormContainer from "@/components/form/FormContainer";
 import { createLandmarkAction } from "@/actions/actions";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+
 import CategoryInput from "@/components/form/CategoryInput";
 import TextAreaInput from "@/components/form/TextAreaInput";
 import ProvinceInput from "@/components/form/ProvinceInput";

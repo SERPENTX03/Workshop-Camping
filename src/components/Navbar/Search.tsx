@@ -22,12 +22,12 @@ const Search = () => {
 
   }, 500);
 
-  useEffect(()=>{
-    if(!searchParams.get('search')){
-      setSearch('')
+  useEffect(() => {
+    const searchQuery = searchParams.get('search'); 
+    if (!searchQuery) {
+      setSearch('');
     }
-  },[searchParams.get('search')])
-
+  }, [searchParams]);
   return (
     <div className="w-full">
       <Input

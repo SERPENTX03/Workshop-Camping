@@ -11,7 +11,7 @@ import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
 import { revalidatePath } from "next/cache";
-import { FormState } from "@/utils/Types";
+import { ActionFunction, FormState } from "@/utils/Types";
 
 const getAuthUser = async () => {
   const user = await currentUser();
@@ -40,8 +40,8 @@ type ToggleFavoriteState = {
 };
 
 export const createProfileAction = async (
-  prevState: FormState = {message: ""},
-  formData: ProfileFormData
+  prevState: FormState= { message: "Initial State" },
+  formData: ProfileFormData 
 ): Promise<{ message: string }> => {
   try {
     const user = await currentUser();
@@ -49,7 +49,7 @@ export const createProfileAction = async (
 
     const rawData = Object.fromEntries(formData);
     const validateField = validateWithZod(profileSchema, rawData);
-
+    console.log("Previous State:", prevState); 
     await db.profile.create({
       data: {
         clerkId: user.id,
@@ -74,10 +74,11 @@ export const createProfileAction = async (
   redirect("/");
 };
 
-export const createLandmarkAction = async (
-  prevState: Record<string, unknown>,
+export const createLandmarkAction: ActionFunction = async (
+  prevState: FormState,
   formData: LandmarkFormData
-): Promise<{ message?: string }> => {
+): Promise<FormState> => {
+  console.log(prevState)
   try {
     const user = await currentUser();
     if (!user) throw new Error("Please log in!");
@@ -97,12 +98,14 @@ export const createLandmarkAction = async (
         profileId: user.id,
       },
     });
+
+    return { message: "Landmark created successfully!" }; 
   } catch (error) {
     return renderError(error);
   }
-
-  redirect("/");
 };
+
+
 
 export const fetchLandmarks = async ({
   search = "",

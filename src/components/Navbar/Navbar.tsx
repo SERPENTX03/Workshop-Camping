@@ -4,9 +4,8 @@ import Menu from "./Menu";
 import Darkmode from "./Darkmode";
 import Profile from "./Profile";
 import Search from "./Search";
-type Props = {};
 
-const Navbar = (props: Props) => {
+const Navbar = () => {
   return (
     <nav>
       <div className="max-w-[1200px] mx-auto px-8 py-6">

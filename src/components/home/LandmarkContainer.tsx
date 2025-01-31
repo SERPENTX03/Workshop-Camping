@@ -5,17 +5,13 @@ import { LandmarkCardProps } from "@/utils/Types";
 import Categories from "../hero/Categories";
 import EmtyList from "./EmtyList";
 
-const LandmarkContainer = async ({
-  search,
-  category,
-}: {
+interface LandmarkContainerProps {
   search?: string;
   category?: string;
-}) => {
-  const landmarks: LandmarkCardProps[] = await fetchLandmarks({
-    search,
-    category,
-  });
+}
+
+const LandmarkContainer = async ({ search, category }: LandmarkContainerProps) => {
+  const landmarks: LandmarkCardProps[] = await fetchLandmarks({ search, category });
   const landmarksHero: LandmarkCardProps[] = await fetchLandmarksHero();
 
   return (

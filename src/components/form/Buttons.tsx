@@ -28,7 +28,7 @@ export const SubmitButton = (props: SubmitProps) => {
 
 export const SingInCardButton = (props: SubmitProps) => {
   const { pending } = useFormStatus();
-  const { name, className } = props;
+  const {  className } = props;
   return (
     <SignInButton mode="modal">
       <Button

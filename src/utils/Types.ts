@@ -1,9 +1,9 @@
 export interface FormState {
-  message: string;
+  message: string ;
 }
 
 export type ActionFunction = (
-  prevState: FormState,
+  prevState: FormState ,
   formData: FormData
 ) => Promise<FormState>;
 

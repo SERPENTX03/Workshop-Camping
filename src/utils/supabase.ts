@@ -12,7 +12,7 @@ export async function uploadFile(image: File) {
   const timeStamp = Date.now();
   const newName = `Serpentx-${timeStamp}-${image.name}`;
 
-  const { data, error, } = await supabase.storage
+  const { data,  } = await supabase.storage
     .from(bucket)
     .upload(newName, image,{
         cacheControl:'3600'
