@@ -4,11 +4,13 @@ import { Suspense } from "react";
 import LoadingCard from "@/components/card/LoadingCard";
 
 interface PageProps {
-  searchParams: { search?: string; category?: string };
+  searchParams?: Record<string, string | undefined>;
 }
 
-const page = ({ searchParams }: PageProps) => {
-  const { search, category } = searchParams;
+const Page = ({ searchParams }: PageProps) => {
+  const search = searchParams?.search;
+  const category = searchParams?.category;
+
   return (
     <section>
       <Suspense fallback={<LoadingCard />}>
@@ -18,4 +20,4 @@ const page = ({ searchParams }: PageProps) => {
   );
 };
 
-export default page;
+export default Page;

@@ -11,7 +11,7 @@ import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
 import { revalidatePath } from "next/cache";
-import { ActionFunction, FormState } from "@/utils/Types";
+import { ActionFunction, FormState, LandmarkCardProps } from "@/utils/Types";
 
 const getAuthUser = async () => {
   const user = await currentUser();
@@ -113,8 +113,8 @@ export const fetchLandmarks = async ({
 }: {
   search?: string;
   category?: string;
-}) => {
-  return db.landmark.findMany({
+}): Promise<LandmarkCardProps[]> => {
+  return await db.landmark.findMany({
     where: {
       category,
       OR: [
