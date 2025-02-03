@@ -1,6 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
+Workshop โปรเจกแรก โปรเจกสำหรับแสดงการท่องเที่ยว สมัครสสมาชิกด้วย Clerk รองรับการกดใจ กดแชร์สถานที่ สามารถสร้างพื้นที่ลงหน้าเพจได้ เชื่อมต่อฐานข้อมูลด้วย Prisma Connect Supabase
 
 First, run the development server:
 
